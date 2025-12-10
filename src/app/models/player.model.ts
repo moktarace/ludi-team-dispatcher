@@ -34,3 +34,10 @@ export interface DispatchResult {
   teams: Team[];
   explanation: string;
 }
+
+export interface PlayerSwapSuggestion {
+  player: Player;
+  scoreDifference: number;
+  newTeamScore: number;
+  targetTeamScore: number;
+}

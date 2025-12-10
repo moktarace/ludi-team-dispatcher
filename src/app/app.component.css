@@ -280,6 +280,258 @@ header h1 {
   color: #666;
 }
 
+/* Drag & Drop */
+.player-item {
+  cursor: move;
+  user-select: none;
+}
+
+.player-item:hover {
+  cursor: grab;
+}
+
+.player-item:active {
+  cursor: grabbing;
+}
+
+.player-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.drag-handle {
+  display: inline-block;
+  margin-right: 8px;
+  color: #999;
+  font-size: 1.2em;
+  cursor: grab;
+}
+
+.team-card.drag-over-team {
+  background-color: #e8f4f8;
+  border: 2px dashed #667eea;
+  transform: scale(1.02);
+}
+
+/* Modal d'échange */
+.swap-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.swap-modal {
+  background-color: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.swap-modal-header {
+  padding: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.swap-modal-header h3 {
+  margin: 0;
+  font-size: 1.3em;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.swap-modal-content {
+  padding: 20px;
+}
+
+.swap-info {
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 1.05em;
+}
+
+.swap-option {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.swap-option:hover {
+  background-color: #f0f0f0;
+  border-color: #667eea;
+  transform: translateX(5px);
+}
+
+.swap-option.move-without-swap {
+  background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+  border-color: #667eea;
+  font-weight: 600;
+}
+
+.swap-option.move-without-swap:hover {
+  background: linear-gradient(135deg, #667eea30 0%, #764ba230 100%);
+}
+
+.option-icon {
+  font-size: 1.8em;
+  flex-shrink: 0;
+}
+
+.option-details {
+  flex: 1;
+}
+
+.option-details strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.option-description {
+  display: block;
+  color: #666;
+  font-size: 0.9em;
+  margin-top: 3px;
+}
+
+.option-stats {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.option-stats span {
+  font-size: 0.85em;
+  padding: 3px 8px;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+.motivation-badge,
+.dispo-badge {
+  font-size: 0.85em !important;
+}
+
+.balance-indicator {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: white;
+  border-radius: 5px;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.balance-indicator.good-balance {
+  color: #28a745;
+  border: 1px solid #28a745;
+}
+
+.balance-label {
+  margin-left: 10px;
+  font-size: 0.85em;
+}
+
+.balance-label.warning {
+  color: #ffc107;
+}
+
+.balance-label.bad {
+  color: #dc3545;
+}
+
+.swap-divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #999;
+  font-style: italic;
+  position: relative;
+}
+
+.swap-divider::before,
+.swap-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.swap-divider::before {
+  left: 0;
+}
+
+.swap-divider::after {
+  right: 0;
+}
+
+.swap-suggestions {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .teams-container {
@@ -297,5 +549,15 @@ header h1 {
   .team-stats {
     flex-direction: column;
     gap: 15px;
+  }
+
+  .swap-modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .option-stats {
+    flex-direction: column;
+    gap: 5px;
   }
 }

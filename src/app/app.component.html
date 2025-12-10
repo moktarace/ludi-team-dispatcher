@@ -47,8 +47,12 @@
   <!-- Affichage des équipes -->
   <div class="teams-container" *ngIf="teams.length > 0">
     <div class="team-card" 
-         *ngFor="let team of teams" 
-         [style]="getTeamColorStyle(team.color)">
+         *ngFor="let team of teams; let teamIndex = index" 
+         [style]="getTeamColorStyle(team.color)"
+         [class.drag-over-team]="dragOverTeamIndex === teamIndex"
+         (dragover)="onTeamDragOver($event, teamIndex)"
+         (dragleave)="onTeamDragLeave($event, teamIndex)"
+         (drop)="onTeamDrop($event, teamIndex)">
       <div class="team-header" [style.background-color]="team.color">
         <h2 [style.color]="team.name === 'Blanc' ? '#000' : '#fff'">
           {{ team.name }}
@@ -74,8 +78,14 @@
       </div>
 
       <div class="players-list">
-        <div class="player-item" *ngFor="let player of team.players">
+        <div class="player-item" 
+             *ngFor="let player of team.players"
+             draggable="true"
+             (dragstart)="onPlayerDragStart($event, player, teamIndex)"
+             (dragend)="onPlayerDragEnd($event)"
+             [class.dragging]="draggedPlayer === player">
           <div class="player-name">
+            <span class="drag-handle">⋮⋮</span>
             <strong>{{ player.prenom }} {{ player.nom }}</strong>
           </div>
           <div class="player-details">
@@ -100,5 +110,55 @@
   <!-- Message initial -->
   <div class="initial-message" *ngIf="teams.length === 0 && !errorMessage">
     <p>👋 Bienvenue ! Uploadez votre fichier pour commencer la distribution des équipes.</p>
+  </div>
+</div>
+
+<!-- Modal de suggestions d'échange -->
+<div class="swap-modal-overlay" *ngIf="showSwapSuggestions" (click)="cancelSwap()">
+  <div class="swap-modal" (click)="$event.stopPropagation()">
+    <div class="swap-modal-header">
+      <h3>🔄 Échanger {{ draggedPlayer?.prenom }} {{ draggedPlayer?.nom }}</h3>
+      <button class="close-btn" (click)="cancelSwap()">✕</button>
+    </div>
+    
+    <div class="swap-modal-content">
+      <p class="swap-info">
+        Choisissez un joueur à échanger ou déplacez sans échange :
+      </p>
+
+      <button class="swap-option move-without-swap" (click)="movePlayerWithoutSwap(dragOverTeamIndex)">
+        <span class="option-icon">➜</span>
+        <div class="option-details">
+          <strong>Déplacer sans échange</strong>
+          <span class="option-description">
+            Déplacer uniquement {{ draggedPlayer?.prenom }} vers l'équipe {{ teams[dragOverTeamIndex]?.name }}
+          </span>
+        </div>
+      </button>
+
+      <div class="swap-divider">ou échanger avec :</div>
+
+      <div class="swap-suggestions">
+        <button class="swap-option" 
+                *ngFor="let suggestion of swapSuggestions"
+                (click)="swapPlayers(suggestion.player)">
+          <span class="option-icon">🔄</span>
+          <div class="option-details">
+            <strong>{{ suggestion.player.prenom }} {{ suggestion.player.nom }}</strong>
+            <div class="option-stats">
+              <span>Score: {{ suggestion.player.score }}</span>
+              <span class="motivation-badge">{{ getMotivationLabel(suggestion.player.motivation) }}</span>
+              <span class="dispo-badge">{{ getDisponibiliteLabel(suggestion.player.disponibilite) }}</span>
+            </div>
+            <div class="balance-indicator" [class.good-balance]="suggestion.scoreDifference < 2">
+              Différence de score : {{ suggestion.scoreDifference.toFixed(1) }}
+              <span class="balance-label" *ngIf="suggestion.scoreDifference < 2">✅ Bon équilibre</span>
+              <span class="balance-label warning" *ngIf="suggestion.scoreDifference >= 2 && suggestion.scoreDifference < 4">⚠️ Équilibre moyen</span>
+              <span class="balance-label bad" *ngIf="suggestion.scoreDifference >= 4">❌ Déséquilibre</span>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
