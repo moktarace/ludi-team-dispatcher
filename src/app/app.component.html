@@ -83,6 +83,7 @@
              draggable="true"
              (dragstart)="onPlayerDragStart($event, player, teamIndex)"
              (dragend)="onPlayerDragEnd($event)"
+             (click)="onPlayerClick(player, team)"
              [class.dragging]="draggedPlayer === player">
           <div class="player-name">
             <span class="drag-handle">⋮⋮</span>
@@ -131,7 +132,7 @@
         <div class="option-details">
           <strong>Déplacer sans échange</strong>
           <span class="option-description">
-            Déplacer uniquement {{ draggedPlayer?.prenom }} vers l'équipe {{ teams[dragOverTeamIndex]?.name }}
+            Déplacer uniquement {{ draggedPlayer?.prenom }} vers l'équipe {{ teams[dragOverTeamIndex].name }}
           </span>
         </div>
       </button>

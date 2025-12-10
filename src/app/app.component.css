@@ -560,4 +560,10 @@ header h1 {
     flex-direction: column;
     gap: 5px;
   }
+
+  .jersey {
+    width: 150px;
+    height: 180px;
+  }
 }
+
