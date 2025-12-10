@@ -1,0 +1,104 @@
+<div class="container">
+  <header>
+    <h1>{{ title }}</h1>
+    <p class="subtitle">Distribution automatique et équilibrée des joueurs en 4 équipes</p>
+  </header>
+
+  <!-- Zone de drag and drop -->
+  <div class="upload-zone"
+       [class.drag-over]="isDragOver"
+       (dragover)="onDragOver($event)"
+       (dragleave)="onDragLeave($event)"
+       (drop)="onDrop($event)">
+    <div class="upload-content">
+      <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      <h3>Glissez-déposez votre fichier CSV/TSV ici</h3>
+      <p>ou</p>
+      <label class="file-input-label">
+        <input type="file" 
+               accept=".csv,.tsv" 
+               (change)="onFileSelected($event)"
+               class="file-input">
+        Parcourir les fichiers
+      </label>
+      <p class="file-info">Format supporté : CSV ou TSV avec colonnes Nom, Prénom, Motivation, Disponibilité</p>
+    </div>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div class="error-message" *ngIf="errorMessage">
+    ⚠️ {{ errorMessage }}
+  </div>
+
+  <!-- Bouton pour afficher/cacher l'explication -->
+  <div class="explanation-toggle" *ngIf="teams.length > 0">
+    <button (click)="toggleExplanation()" class="toggle-btn">
+      {{ showExplanation ? '▼' : '▶' }} Explication du dispatch
+    </button>
+    <div class="explanation-content" *ngIf="showExplanation">
+      <pre>{{ explanation }}</pre>
+    </div>
+  </div>
+
+  <!-- Affichage des équipes -->
+  <div class="teams-container" *ngIf="teams.length > 0">
+    <div class="team-card" 
+         *ngFor="let team of teams" 
+         [style]="getTeamColorStyle(team.color)">
+      <div class="team-header" [style.background-color]="team.color">
+        <h2 [style.color]="team.name === 'Blanc' ? '#000' : '#fff'">
+          {{ team.name }}
+        </h2>
+        <span class="team-count" [style.color]="team.name === 'Blanc' ? '#000' : '#fff'">
+          {{ team.players.length }} joueur(s)
+        </span>
+      </div>
+      
+      <div class="team-stats">
+        <div class="stat">
+          <span class="stat-label">Score total:</span>
+          <span class="stat-value">{{ team.totalScore.toFixed(1) }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Motivation moy:</span>
+          <span class="stat-value">{{ team.avgMotivation.toFixed(2) }}/4</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Disponibilité moy:</span>
+          <span class="stat-value">{{ team.avgDisponibilite.toFixed(2) }}/4</span>
+        </div>
+      </div>
+
+      <div class="players-list">
+        <div class="player-item" *ngFor="let player of team.players">
+          <div class="player-name">
+            <strong>{{ player.prenom }} {{ player.nom }}</strong>
+          </div>
+          <div class="player-details">
+            <span class="detail-item" [title]="getMotivationLabel(player.motivation)">
+              {{ getMotivationLabel(player.motivation) }}
+            </span>
+            <span class="detail-item" [title]="getDisponibiliteLabel(player.disponibilite)">
+              {{ getDisponibiliteLabel(player.disponibilite) }}
+            </span>
+          </div>
+          <div class="player-score">
+            Score: {{ player.score }}
+          </div>
+          <div class="player-comment" *ngIf="player.commentaire">
+            💬 {{ player.commentaire }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message initial -->
+  <div class="initial-message" *ngIf="teams.length === 0 && !errorMessage">
+    <p>👋 Bienvenue ! Uploadez votre fichier pour commencer la distribution des équipes.</p>
+  </div>
+</div>
