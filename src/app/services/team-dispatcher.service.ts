@@ -27,32 +27,24 @@ export class TeamDispatcherService {
     // Trier les joueurs par score décroissant (les plus motivés/disponibles en premier)
     const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
-    // Distribution équilibrée : snake draft
-    // 1er tour : équipe 0, 1, 2, 3
-    // 2ème tour : équipe 3, 2, 1, 0 (inversé)
-    // 3ème tour : équipe 0, 1, 2, 3
-    // etc.
-    let teamIndex = 0;
-    let direction = 1; // 1 = avant, -1 = arrière
-
+    // Distribution équilibrée : algorithme greedy amélioré
+    // Assigne chaque joueur à l'équipe avec le score total le plus faible
+    // Cela garantit un meilleur équilibrage même avec un nombre impair de joueurs
     for (const player of sortedPlayers) {
-      teams[teamIndex].players.push(player);
-      teams[teamIndex].totalScore += player.score;
-
-      // Avancer vers l'équipe suivante
-      if (direction === 1) {
-        teamIndex++;
-        if (teamIndex >= teams.length) {
-          teamIndex = teams.length - 1;
-          direction = -1;
-        }
-      } else {
-        teamIndex--;
-        if (teamIndex < 0) {
-          teamIndex = 0;
-          direction = 1;
+      // Trouver l'équipe avec le score total le plus faible
+      let minTeamIndex = 0;
+      let minScore = teams[0].totalScore;
+      
+      for (let i = 1; i < teams.length; i++) {
+        if (teams[i].totalScore < minScore) {
+          minScore = teams[i].totalScore;
+          minTeamIndex = i;
         }
       }
+
+      // Assigner le joueur à cette équipe
+      teams[minTeamIndex].players.push(player);
+      teams[minTeamIndex].totalScore += player.score;
     }
 
     // Calculer les moyennes pour chaque équipe
