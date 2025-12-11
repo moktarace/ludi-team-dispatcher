@@ -34,14 +34,47 @@
     ⚠️ {{ errorMessage }}
   </div>
 
-  <!-- Bouton pour afficher/cacher l'explication -->
-  <div class="explanation-toggle" *ngIf="teams.length > 0">
+  <!-- Boutons d'action -->
+  <div class="action-buttons" *ngIf="teams.length > 0">
+    <button (click)="openWaitingRoom()" class="waiting-room-btn">
+      🎄 Salle d'attente
+    </button>
     <button (click)="toggleExplanation()" class="toggle-btn">
       {{ showExplanation ? '▼' : '▶' }} Explication du dispatch
     </button>
-    <div class="explanation-content" *ngIf="showExplanation">
-      <pre>{{ explanation }}</pre>
+    <button (click)="exportToText()" class="export-btn">
+      📄 Exporter en TXT
+    </button>
+  </div>
+
+  <!-- Sélecteur de vitesse d'animation -->
+  <div class="animation-speed-selector" *ngIf="teams.length > 0">
+    <label>⚡ Vitesse d'animation :</label>
+    <div class="speed-buttons">
+      <button 
+        (click)="setAnimationSpeed('slow')" 
+        [class.active]="animationSpeed === 'slow'"
+        class="speed-btn">
+        🐢 Lent
+      </button>
+      <button 
+        (click)="setAnimationSpeed('normal')" 
+        [class.active]="animationSpeed === 'normal'"
+        class="speed-btn">
+        ⚡ Normal
+      </button>
+      <button 
+        (click)="setAnimationSpeed('fast')" 
+        [class.active]="animationSpeed === 'fast'"
+        class="speed-btn">
+        🚀 Rapide
+      </button>
     </div>
+  </div>
+
+  <!-- Explication du dispatch -->
+  <div class="explanation-content" *ngIf="showExplanation && teams.length > 0">
+    <pre>{{ explanation }}</pre>
   </div>
 
   <!-- Affichage des équipes -->

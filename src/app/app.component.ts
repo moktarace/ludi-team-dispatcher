@@ -27,11 +27,17 @@ export class AppComponent {
   selectedTeam: Team | null = null;
   showRevealAnimation: boolean = false;
   animationPhase: 'smoke' | 'flash' | 'reveal' = 'smoke';
+  waitingRoomWindow: Window | null = null;
+  animationSpeed: 'slow' | 'normal' | 'fast' = 'normal';
 
   constructor(
     private csvParser: CsvParserService,
     private dispatcher: TeamDispatcherService
   ) {}
+
+  setAnimationSpeed(speed: 'slow' | 'normal' | 'fast'): void {
+    this.animationSpeed = speed;
+  }
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -106,6 +112,65 @@ export class AppComponent {
 
   toggleExplanation(): void {
     this.showExplanation = !this.showExplanation;
+  }
+
+  exportToText(): void {
+    if (this.teams.length === 0) {
+      alert('Aucune équipe à exporter. Veuillez d\'abord charger un fichier.');
+      return;
+    }
+
+    let textContent = '═══════════════════════════════════════════════\n';
+    textContent += '🎄   DISPATCH DES ÉQUIPES - LUDI IMPROVISEM   🎄\n';
+    textContent += '═══════════════════════════════════════════════\n\n';
+
+    this.teams.forEach((team, index) => {
+      const teamIcon = this.getTeamIcon(team.name);
+      textContent += `${teamIcon} ÉQUIPE ${team.name.toUpperCase()} ${teamIcon}\n`;
+      textContent += `Score total: ${team.totalScore.toFixed(2)} | Joueurs: ${team.players.length}\n`;
+      textContent += '─────────────────────────────────────────────\n';
+      
+      team.players.forEach((player, playerIndex) => {
+        const motivationLabel = this.getMotivationLabel(player.motivation);
+        const disponibiliteLabel = this.getDisponibiliteLabel(player.disponibilite);
+        textContent += `${playerIndex + 1}. ${player.prenom} ${player.nom}\n`;
+        textContent += `   Motivation: ${motivationLabel}\n`;
+        textContent += `   Disponibilité: ${disponibiliteLabel}\n`;
+        textContent += `   Score: ${player.score.toFixed(2)}\n`;
+        if (playerIndex < team.players.length - 1) {
+          textContent += '\n';
+        }
+      });
+      
+      if (index < this.teams.length - 1) {
+        textContent += '\n\n';
+      }
+    });
+
+    textContent += '\n\n═══════════════════════════════════════════════\n';
+    textContent += 'STATISTIQUES GLOBALES\n';
+    textContent += '═══════════════════════════════════════════════\n';
+    textContent += this.explanation;
+
+    // Créer un blob et déclencher le téléchargement
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.download = `dispatch-equipes-${dateStr}.txt`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  getTeamIcon(teamName: string): string {
+    switch (teamName) {
+      case 'Noirs': return '⚫';
+      case 'Jaune': return '🟡';
+      case 'Rouge': return '🔴';
+      case 'Blanc': return '⚪';
+      default: return '🔵';
+    }
   }
 
   getMotivationLabel(motivation: number): string {
@@ -279,6 +344,30 @@ export class AppComponent {
       : 0;
   }
 
+  // Ouvrir la salle d'attente pour le public
+  openWaitingRoom(): void {
+    const width = 700;
+    const height = 800;
+    const left = (screen.width - width) / 2;
+    const top = (screen.height - height) / 2;
+    
+    this.waitingRoomWindow = window.open(
+      '', 
+      'WaitingRoom',
+      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=no`
+    );
+
+    if (!this.waitingRoomWindow) {
+      alert('Veuillez autoriser les popups pour afficher la salle d\'attente !');
+      return;
+    }
+
+    // Créer le contenu HTML de la salle d'attente
+    const html = this.generateWaitingRoomHTML();
+    this.waitingRoomWindow.document.write(html);
+    this.waitingRoomWindow.document.close();
+  }
+
   // Animation de révélation dans une nouvelle fenêtre
   onPlayerClick(player: Player, team: Team): void {
     // Ne pas ouvrir si on est en train de drag
@@ -286,17 +375,25 @@ export class AppComponent {
       return;
     }
 
-    // Ouvrir une nouvelle fenêtre popup
-    const width = 700;
-    const height = 800;
-    const left = (screen.width - width) / 2;
-    const top = (screen.height - height) / 2;
+    // Utiliser la fenêtre de salle d'attente si elle existe, sinon en créer une nouvelle
+    let revealWindow: Window | null = null;
     
-    const revealWindow = window.open(
-      '', 
-      'TeamReveal',
-      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=no`
-    );
+    if (this.waitingRoomWindow && !this.waitingRoomWindow.closed) {
+      // Réutiliser la fenêtre existante
+      revealWindow = this.waitingRoomWindow;
+    } else {
+      // Ouvrir une nouvelle fenêtre popup
+      const width = 700;
+      const height = 800;
+      const left = (screen.width - width) / 2;
+      const top = (screen.height - height) / 2;
+      
+      revealWindow = window.open(
+        '', 
+        'TeamReveal',
+        `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=no`
+      );
+    }
 
     if (!revealWindow) {
       alert('Veuillez autoriser les popups pour voir la révélation !');
@@ -305,12 +402,189 @@ export class AppComponent {
 
     // Créer le contenu HTML de la fenêtre
     const html = this.generateRevealHTML(player, team);
+    revealWindow.document.open();
     revealWindow.document.write(html);
     revealWindow.document.close();
   }
 
+  private generateWaitingRoomHTML(): string {
+    return `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salle d'attente - LUDI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .waiting-container {
+      text-align: center;
+      color: white;
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .waiting-icons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 50px;
+      font-size: 5em;
+      animation: iconsFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconsFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+    }
+
+    .waiting-title {
+      font-size: 3.5em;
+      color: #FFD700;
+      margin-bottom: 30px;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+
+    .waiting-subtitle {
+      font-size: 2em;
+      color: #fff;
+      margin-bottom: 60px;
+      opacity: 0.9;
+      animation: fadeInOut 3s ease-in-out infinite;
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .snowflake {
+      position: absolute;
+      color: white;
+      font-size: 2em;
+      opacity: 0.8;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+
+    .loading-dots {
+      font-size: 3em;
+      margin-top: 40px;
+    }
+
+    .loading-dots span {
+      animation: blink 1.5s infinite;
+      display: inline-block;
+    }
+
+    .loading-dots span:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .loading-dots span:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .christmas-lights {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 50px;
+      font-size: 2em;
+    }
+
+    .light {
+      animation: lightBlink 1s infinite;
+    }
+
+    .light:nth-child(2) { animation-delay: 0.2s; }
+    .light:nth-child(3) { animation-delay: 0.4s; }
+    .light:nth-child(4) { animation-delay: 0.6s; }
+    .light:nth-child(5) { animation-delay: 0.8s; }
+
+    @keyframes lightBlink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+  </style>
+</head>
+<body>
+  ${Array.from({ length: 20 }, (_, i) => `
+    <div class="snowflake" style="left: ${Math.random() * 100}%; animation-duration: ${5 + Math.random() * 5}s; animation-delay: ${Math.random() * 5}s;">
+      ❄
+    </div>
+  `).join('')}
+
+  <div class="waiting-container">
+    <div class="waiting-icons">
+      🎄 🎁 ⭐
+    </div>
+    <h1 class="waiting-title">🎅 Bienvenue ! 🎁</h1>
+    <p class="waiting-subtitle">La révélation des équipes va commencer...</p>
+    <div class="loading-dots">
+      <span>•</span>
+      <span>•</span>
+      <span>•</span>
+    </div>
+    <div class="christmas-lights">
+      <span class="light">🔴</span>
+      <span class="light">🟡</span>
+      <span class="light">🟢</span>
+      <span class="light">🔵</span>
+      <span class="light">🟣</span>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+  }
+
   private generateRevealHTML(player: Player, team: Team): string {
     const textColor = team.name === 'Blanc' ? '#000' : '#fff';
+    
+    // Calcul des durées d'animation en fonction de la vitesse
+    const speedMultiplier = this.animationSpeed === 'slow' ? 1.5 : this.animationSpeed === 'fast' ? 0.5 : 1;
+    const giftDuration = 2 * speedMultiplier;
+    const giftDisappearDelay = 2 * speedMultiplier;
+    const openingDelay = 2 * speedMultiplier;
+    const openingFadeDelay = 3 * speedMultiplier;
+    const contentDelay = 3 * speedMultiplier;
+    const buttonDelay = 3.8 * speedMultiplier;
 
     return `
 <!DOCTYPE html>
@@ -369,14 +643,14 @@ export class AppComponent {
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: fadeOut 0.5s ease-out 2s forwards;
+      animation: fadeOut ${0.5 * speedMultiplier}s ease-out ${giftDisappearDelay}s forwards;
     }
 
     .gift-box {
       width: 250px;
       height: 250px;
       position: relative;
-      animation: giftShake 0.5s ease-in-out 1.5s;
+      animation: giftShake ${0.5 * speedMultiplier}s ease-in-out ${1.5 * speedMultiplier}s;
     }
 
     @keyframes giftShake {
@@ -392,7 +666,7 @@ export class AppComponent {
       border-radius: 10px;
       position: relative;
       box-shadow: 0 20px 60px rgba(196, 30, 58, 0.6);
-      animation: giftFloat 2s ease-in-out infinite;
+      animation: giftFloat ${giftDuration}s ease-in-out infinite;
     }
 
     @keyframes giftFloat {
@@ -575,7 +849,7 @@ export class AppComponent {
       align-items: center;
       justify-content: center;
       opacity: 0;
-      animation: openingAppear 0.2s ease-out 2s forwards, fadeOut 0.8s ease-out 2.8s forwards;
+      animation: openingAppear ${0.2 * speedMultiplier}s ease-out ${openingDelay}s forwards, fadeOut ${0.8 * speedMultiplier}s ease-out ${2.8 * speedMultiplier}s forwards;
     }
 
     @keyframes openingAppear {
@@ -588,7 +862,7 @@ export class AppComponent {
       width: 100%;
       height: 100%;
       background: radial-gradient(circle, white 0%, rgba(255, 255, 255, 0.95) 30%, rgba(255, 255, 255, 0.7) 60%, transparent 100%);
-      animation: megaFlashPulse 0.6s ease-out forwards;
+      animation: megaFlashPulse ${0.6 * speedMultiplier}s ease-out forwards;
       z-index: 20;
     }
 
@@ -820,7 +1094,7 @@ export class AppComponent {
       justify-content: center;
       position: relative;
       opacity: 0;
-      animation: revealFadeIn 0.6s ease-out 2.5s forwards;
+      animation: revealFadeIn ${0.6 * speedMultiplier}s ease-out ${2.5 * speedMultiplier}s forwards;
     }
 
     @keyframes revealFadeIn {
@@ -1059,7 +1333,7 @@ export class AppComponent {
       cursor: pointer;
       transition: all 0.3s;
       box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-      animation: buttonFadeIn 0.5s ease-out 3.8s backwards;
+      animation: buttonFadeIn ${0.5 * speedMultiplier}s ease-out ${buttonDelay}s backwards;
     }
 
     @keyframes buttonFadeIn {
@@ -1170,6 +1444,7 @@ export class AppComponent {
       </div>
     </div>
   </div>
+
 </body>
 </html>
     `;
