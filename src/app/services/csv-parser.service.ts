@@ -63,7 +63,22 @@ export class CsvParserService {
       });
     }
 
-    return players;
+    // Supprimer les doublons (même nom et prénom, insensible à la casse)
+    // Ne garder que la dernière entrée
+    return this.removeDuplicates(players);
+  }
+
+  private removeDuplicates(players: Player[]): Player[] {
+    const uniquePlayers = new Map<string, Player>();
+    
+    // Parcourir les joueurs et stocker chaque joueur avec une clé unique
+    // Le Map écrasera automatiquement les anciennes entrées, gardant la dernière
+    for (const player of players) {
+      const key = `${player.nom.toLowerCase()}-${player.prenom.toLowerCase()}`;
+      uniquePlayers.set(key, player);
+    }
+    
+    return Array.from(uniquePlayers.values());
   }
 
   private parseLine(line: string): string[] {
