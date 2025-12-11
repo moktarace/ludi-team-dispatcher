@@ -328,12 +328,28 @@ export class AppComponent {
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
+    }
+
+    /* Flocons de neige */
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      color: white;
+      font-size: 1.5em;
+      opacity: 0.8;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+      }
     }
 
     .reveal-container {
@@ -345,94 +361,204 @@ export class AppComponent {
       position: relative;
     }
 
-    /* Phase 1: Fumée */
-    .reveal-smoke {
+    /* Phase 1: Cadeau de Noël qui brille */
+    .reveal-gift {
       width: 100%;
       height: 100%;
       position: absolute;
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: fadeOut 1.5s ease-out 1.5s forwards;
+      animation: fadeOut 0.5s ease-out 2s forwards;
     }
 
-    .mystery-box {
-      width: 200px;
-      height: 200px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .gift-box {
+      width: 250px;
+      height: 250px;
       position: relative;
-      animation: float 2s ease-in-out infinite, pulse 1.5s ease-in-out infinite;
-      box-shadow: 0 10px 50px rgba(102, 126, 234, 0.5);
+      animation: giftShake 0.5s ease-in-out 1.5s;
     }
 
-    @keyframes float {
+    @keyframes giftShake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    .gift-base {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+      border-radius: 10px;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(196, 30, 58, 0.6);
+      animation: giftFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes giftFloat {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+      50% { transform: translateY(-15px); }
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    .box-glow {
+    .gift-ribbon-v {
       position: absolute;
-      inset: -20px;
-      background: radial-gradient(circle, rgba(102, 126, 234, 0.4) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: glowPulse 2s ease-in-out infinite;
+      width: 40px;
+      height: 100%;
+      background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: inset -2px 0 5px rgba(0,0,0,0.3);
     }
 
-    @keyframes glowPulse {
-      0%, 100% { opacity: 0.5; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    .box-content {
-      font-size: 120px;
-      font-weight: bold;
-      color: white;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-      animation: questionRotate 3s ease-in-out infinite;
-    }
-
-    @keyframes questionRotate {
-      0%, 100% { transform: rotate(-5deg); }
-      50% { transform: rotate(5deg); }
-    }
-
-    .smoke-particle {
+    .gift-ribbon-h {
       position: absolute;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: smokeRise 1.5s ease-out infinite;
+      width: 100%;
+      height: 40px;
+      background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+      top: 50%;
+      transform: translateY(-50%);
+      box-shadow: inset 0 -2px 5px rgba(0,0,0,0.3);
     }
 
-    .smoke-1 { left: 20%; animation-delay: 0s; }
-    .smoke-2 { left: 40%; animation-delay: 0.3s; }
-    .smoke-3 { left: 60%; animation-delay: 0.6s; }
-    .smoke-4 { left: 30%; animation-delay: 0.9s; }
-    .smoke-5 { left: 70%; animation-delay: 1.2s; }
+    .gift-bow {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bowBounce 1s ease-in-out infinite;
+    }
+
+    @keyframes bowBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+    }
+
+    .bow-loop {
+      width: 60px;
+      height: 50px;
+      background: #FFD700;
+      border-radius: 50% 50% 0 0;
+      position: absolute;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .bow-loop-left {
+      left: -30px;
+      transform: rotate(-30deg);
+    }
+
+    .bow-loop-right {
+      right: -30px;
+      transform: rotate(30deg);
+    }
+
+    .bow-knot {
+      width: 40px;
+      height: 40px;
+      background: #FFA500;
+      border-radius: 50%;
+      position: absolute;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .gift-sparkle {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      animation: sparkle 1.5s ease-in-out infinite;
+    }
+
+    .sparkle-1 { top: 10%; left: 15%; animation-delay: 0s; }
+    .sparkle-2 { top: 20%; right: 15%; animation-delay: 0.3s; }
+    .sparkle-3 { bottom: 20%; left: 20%; animation-delay: 0.6s; }
+    .sparkle-4 { bottom: 15%; right: 20%; animation-delay: 0.9s; }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1) rotate(180deg); }
+    }
+
+    /* FUMÉE MAGIQUE INTENSE qui s'échappe du cadeau */
+    .magic-smoke {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.7) 0%, rgba(255, 165, 0, 0.5) 30%, rgba(255, 100, 0, 0.3) 60%, transparent 80%);
+      border-radius: 50%;
+      filter: blur(15px);
+      animation: smokeRise 1.8s ease-out infinite;
+    }
+
+    .smoke-1 { left: 10%; animation-delay: 0s; }
+    .smoke-2 { left: 25%; animation-delay: 0.2s; }
+    .smoke-3 { left: 40%; animation-delay: 0.4s; }
+    .smoke-4 { left: 55%; animation-delay: 0.6s; }
+    .smoke-5 { left: 70%; animation-delay: 0.8s; }
+    .smoke-6 { left: 85%; animation-delay: 1s; }
+    .smoke-7 { left: 15%; animation-delay: 0.3s; }
+    .smoke-8 { left: 50%; animation-delay: 0.5s; }
+    .smoke-9 { left: 65%; animation-delay: 0.7s; }
+    .smoke-10 { left: 80%; animation-delay: 0.9s; }
+    .smoke-11 { left: 20%; animation-delay: 0.1s; }
+    .smoke-12 { left: 45%; animation-delay: 0.35s; }
+    .smoke-13 { left: 60%; animation-delay: 0.55s; }
+    .smoke-14 { left: 75%; animation-delay: 0.75s; }
+    .smoke-15 { left: 30%; animation-delay: 0.15s; }
 
     @keyframes smokeRise {
       0% {
-        bottom: 20%;
+        bottom: 40%;
         opacity: 0;
-        transform: scale(0.5) translateX(0);
+        transform: scale(0.3) translateX(0) rotate(0deg);
       }
-      50% {
-        opacity: 0.5;
+      20% {
+        opacity: 0.8;
       }
       100% {
-        bottom: 80%;
+        bottom: 110%;
         opacity: 0;
-        transform: scale(1.5) translateX(50px);
+        transform: scale(2.5) translateX(40px) rotate(180deg);
+      }
+    }
+
+    /* Particules supplémentaires de fumée */
+    .smoke-particle {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 215, 0, 0.4) 40%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(10px);
+      animation: particleFloat 2s ease-out infinite;
+    }
+
+    .particle-1 { left: 5%; animation-delay: 0.1s; }
+    .particle-2 { left: 30%; animation-delay: 0.4s; }
+    .particle-3 { left: 50%; animation-delay: 0.7s; }
+    .particle-4 { left: 70%; animation-delay: 1s; }
+    .particle-5 { left: 90%; animation-delay: 0.2s; }
+    .particle-6 { left: 15%; animation-delay: 0.5s; }
+    .particle-7 { left: 60%; animation-delay: 0.8s; }
+    .particle-8 { left: 80%; animation-delay: 0.3s; }
+
+    @keyframes particleFloat {
+      0% {
+        bottom: 45%;
+        opacity: 0;
+        transform: scale(0.2) translateX(0);
+      }
+      30% {
+        opacity: 0.9;
+      }
+      100% {
+        bottom: 115%;
+        opacity: 0;
+        transform: scale(1.8) translateX(-40px);
       }
     }
 
@@ -440,8 +566,8 @@ export class AppComponent {
       to { opacity: 0; visibility: hidden; }
     }
 
-    /* Phase 2: Flash */
-    .reveal-flash {
+    /* Phase 2: EXPLOSION ULTRA INTENSE avec FLASH AVEUGLANT */
+    .reveal-opening {
       width: 100%;
       height: 100%;
       position: absolute;
@@ -449,62 +575,242 @@ export class AppComponent {
       align-items: center;
       justify-content: center;
       opacity: 0;
-      animation: flashAppear 0.5s ease-out 1.5s forwards, fadeOut 0.5s ease-out 2s forwards;
+      animation: openingAppear 0.2s ease-out 2s forwards, fadeOut 0.8s ease-out 2.8s forwards;
     }
 
-    @keyframes flashAppear {
+    @keyframes openingAppear {
       to { opacity: 1; }
     }
 
-    .flash-burst {
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, white 0%, transparent 70%);
-      border-radius: 50%;
-      animation: flashExpand 0.5s ease-out forwards;
+    /* FLASH BLANC ULTRA INTENSE - Triple effet */
+    .white-flash {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, white 0%, rgba(255, 255, 255, 0.95) 30%, rgba(255, 255, 255, 0.7) 60%, transparent 100%);
+      animation: megaFlashPulse 0.6s ease-out forwards;
+      z-index: 20;
     }
 
-    @keyframes flashExpand {
+    @keyframes megaFlashPulse {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      25% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.9;
+        transform: scale(1.2);
+      }
+      75% {
+        opacity: 0.7;
+        transform: scale(1.5);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(2);
+      }
+    }
+
+    /* Flash secondaire pour effet de rebond */
+    .flash-secondary {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, #FFD700 0%, #FFA500 40%, transparent 70%);
+      animation: secondaryFlash 0.5s ease-out 0.1s forwards;
+      z-index: 19;
+    }
+
+    @keyframes secondaryFlash {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(3);
+      }
+    }
+
+    /* Explosion centrale MASSIVE */
+    .opening-burst {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, 
+        white 0%, 
+        #FFD700 20%, 
+        #FFA500 40%, 
+        #FF6B00 60%, 
+        transparent 80%);
+      border-radius: 50%;
+      animation: megaBurstExpand 0.7s ease-out forwards;
+      box-shadow: 
+        0 0 150px #FFD700, 
+        0 0 300px #FFA500,
+        0 0 450px #FF6B00,
+        inset 0 0 100px white;
+      z-index: 15;
+    }
+
+    @keyframes megaBurstExpand {
+      0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(25) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Ondes de choc multiples */
+    .shockwave {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border: 4px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      animation: shockwaveExpand 0.8s ease-out forwards;
+      z-index: 18;
+    }
+
+    .shockwave-1 { animation-delay: 0s; }
+    .shockwave-2 { animation-delay: 0.15s; }
+    .shockwave-3 { animation-delay: 0.3s; }
+
+    @keyframes shockwaveExpand {
       0% {
         transform: scale(0);
         opacity: 1;
       }
       100% {
-        transform: scale(30);
+        transform: scale(20);
         opacity: 0;
       }
     }
 
-    .flash-rays {
+    /* Rayons de lumière ULTRA NOMBREUX */
+    .light-rays {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 17;
+    }
+
+    .light-ray {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 400px;
+      background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(255, 215, 0, 0.7) 30%, 
+        rgba(255, 165, 0, 0.5) 60%,
+        transparent 100%);
+      transform-origin: top center;
+      animation: megaRayExpand 0.6s ease-out forwards;
+      filter: blur(2px);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    }
+
+    @keyframes megaRayExpand {
+      0% {
+        height: 0;
+        opacity: 1;
+        width: 10px;
+      }
+      50% {
+        width: 15px;
+      }
+      100% {
+        height: 500px;
+        opacity: 0;
+        width: 5px;
+      }
+    }
+
+    ${Array.from({ length: 24 }, (_, i) => `
+      .light-ray:nth-child(${i + 1}) { 
+        transform: rotate(${i * 15}deg) translateY(-250px);
+        animation-delay: ${(i % 4) * 0.05}s;
+      }
+    `).join('')}
+
+    /* Particules d'explosion */
+    .explosion-particle {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: radial-gradient(circle, white, #FFD700);
+      border-radius: 50%;
+      box-shadow: 0 0 15px #FFD700;
+      animation: particleExplosion 0.8s ease-out forwards;
+    }
+
+    @keyframes particleExplosion {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    ${Array.from({ length: 30 }, (_, i) => {
+      const angle = (i / 30) * 360;
+      const distance = 200 + (i % 3) * 50;
+      return `
+      .explosion-particle:nth-child(${i + 1}) { 
+        left: 50%; 
+        top: 50%;
+        animation-delay: ${(i % 5) * 0.03}s;
+        transform: translate(-50%, -50%) translate(${Math.cos(angle * Math.PI / 180) * distance}px, ${Math.sin(angle * Math.PI / 180) * distance}px) scale(${0.5 + (i % 3) * 0.3});
+      }`;
+    }).join('')}
+
+    .stars {
       position: absolute;
       width: 100%;
       height: 100%;
     }
 
-    .ray {
+    .star {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 4px;
-      height: 200px;
-      background: linear-gradient(to bottom, white, transparent);
-      transform-origin: top center;
+      color: #FFD700;
+      font-size: 2em;
+      animation: starBurst 0.6s ease-out forwards;
     }
 
-    .ray:nth-child(1) { transform: rotate(0deg) translateY(-100px); }
-    .ray:nth-child(2) { transform: rotate(30deg) translateY(-100px); }
-    .ray:nth-child(3) { transform: rotate(60deg) translateY(-100px); }
-    .ray:nth-child(4) { transform: rotate(90deg) translateY(-100px); }
-    .ray:nth-child(5) { transform: rotate(120deg) translateY(-100px); }
-    .ray:nth-child(6) { transform: rotate(150deg) translateY(-100px); }
-    .ray:nth-child(7) { transform: rotate(180deg) translateY(-100px); }
-    .ray:nth-child(8) { transform: rotate(210deg) translateY(-100px); }
-    .ray:nth-child(9) { transform: rotate(240deg) translateY(-100px); }
-    .ray:nth-child(10) { transform: rotate(270deg) translateY(-100px); }
-    .ray:nth-child(11) { transform: rotate(300deg) translateY(-100px); }
-    .ray:nth-child(12) { transform: rotate(330deg) translateY(-100px); }
+    @keyframes starBurst {
+      0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
 
-    /* Phase 3: Révélation */
+    .star:nth-child(1) { left: 50%; top: 50%; animation-delay: 0s; transform: translate(-50%, -50%) translate(-100px, -100px) scale(1) rotate(360deg); }
+    .star:nth-child(2) { left: 50%; top: 50%; animation-delay: 0.05s; transform: translate(-50%, -50%) translate(100px, -100px) scale(1) rotate(360deg); }
+    .star:nth-child(3) { left: 50%; top: 50%; animation-delay: 0.1s; transform: translate(-50%, -50%) translate(-100px, 100px) scale(1) rotate(360deg); }
+    .star:nth-child(4) { left: 50%; top: 50%; animation-delay: 0.15s; transform: translate(-50%, -50%) translate(100px, 100px) scale(1) rotate(360deg); }
+    .star:nth-child(5) { left: 50%; top: 50%; animation-delay: 0.2s; transform: translate(-50%, -50%) translate(0, -120px) scale(1) rotate(360deg); }
+    .star:nth-child(6) { left: 50%; top: 50%; animation-delay: 0.25s; transform: translate(-50%, -50%) translate(0, 120px) scale(1) rotate(360deg); }
+
+    /* Phase 3: Révélation avec flocons */
     .reveal-content {
       width: 100%;
       height: 100%;
@@ -514,7 +820,7 @@ export class AppComponent {
       justify-content: center;
       position: relative;
       opacity: 0;
-      animation: revealFadeIn 0.5s ease-out 2s forwards;
+      animation: revealFadeIn 0.6s ease-out 2.5s forwards;
     }
 
     @keyframes revealFadeIn {
@@ -528,7 +834,7 @@ export class AppComponent {
       }
     }
 
-    .confetti-container {
+    .snow-container {
       position: absolute;
       top: 0;
       left: 0;
@@ -538,37 +844,34 @@ export class AppComponent {
       overflow: hidden;
     }
 
-    .confetti {
+    .snow {
       position: absolute;
-      width: 10px;
-      height: 10px;
+      color: white;
+      font-size: 1.5em;
       top: -10px;
-      animation: confettiFall 3s ease-out forwards;
+      animation: snowFall linear infinite;
+      opacity: 0.8;
     }
 
-    .confetti:nth-child(odd) { background-color: #ff0; }
-    .confetti:nth-child(3n) { background-color: #0ff; }
-    .confetti:nth-child(4n) { background-color: #f00; }
-    .confetti:nth-child(5n) { background-color: #0f0; }
-    .confetti:nth-child(2n) { background-color: #f0f; }
-
-    ${Array.from({ length: 20 }, (_, i) => `
-      .confetti:nth-child(${i + 1}) { 
-        left: ${(i + 1) * 5}%; 
-        animation-delay: ${(i % 3) * 0.1}s; 
-      }
-    `).join('')}
-
-    @keyframes confettiFall {
+    @keyframes snowFall {
       0% {
         top: -10px;
-        transform: rotateZ(0deg);
+        opacity: 0.8;
       }
       100% {
-        top: 100%;
-        transform: rotateZ(720deg);
+        top: 100vh;
+        opacity: 0.3;
       }
     }
+
+    ${Array.from({ length: 15 }, (_, i) => `
+      .snow:nth-child(${i + 1}) { 
+        left: ${(i + 1) * 6.5}%; 
+        animation-duration: ${3 + (i % 5)}s;
+        animation-delay: ${(i % 3) * 0.5}s;
+        font-size: ${0.8 + (i % 3) * 0.3}em;
+      }
+    `).join('')}
 
     .jersey-container {
       position: relative;
@@ -778,31 +1081,66 @@ export class AppComponent {
 </head>
 <body>
   <div class="reveal-container">
-    <!-- Phase 1: Fumée -->
-    <div class="reveal-smoke">
-      <div class="smoke-particle smoke-1"></div>
-      <div class="smoke-particle smoke-2"></div>
-      <div class="smoke-particle smoke-3"></div>
-      <div class="smoke-particle smoke-4"></div>
-      <div class="smoke-particle smoke-5"></div>
-      <div class="mystery-box">
-        <div class="box-glow"></div>
-        <div class="box-content">?</div>
+    <!-- Phase 1: Cadeau de Noël avec BEAUCOUP de fumée magique -->
+    <div class="reveal-gift">
+      <div class="gift-box">
+        <div class="gift-base">
+          <div class="gift-ribbon-v"></div>
+          <div class="gift-ribbon-h"></div>
+          <div class="gift-sparkle sparkle-1"></div>
+          <div class="gift-sparkle sparkle-2"></div>
+          <div class="gift-sparkle sparkle-3"></div>
+          <div class="gift-sparkle sparkle-4"></div>
+          <!-- FUMÉE MAGIQUE INTENSE (15 particules) -->
+          ${Array.from({ length: 15 }, (_, i) => `<div class="magic-smoke smoke-${i + 1}"></div>`).join('')}
+          <!-- Particules supplémentaires (8 particules) -->
+          ${Array.from({ length: 8 }, (_, i) => `<div class="smoke-particle particle-${i + 1}"></div>`).join('')}
+        </div>
+        <div class="gift-bow">
+          <div class="bow-loop bow-loop-left"></div>
+          <div class="bow-loop bow-loop-right"></div>
+          <div class="bow-knot"></div>
+        </div>
       </div>
     </div>
 
-    <!-- Phase 2: Flash -->
-    <div class="reveal-flash">
-      <div class="flash-burst"></div>
-      <div class="flash-rays">
-        ${Array.from({ length: 12 }, () => '<div class="ray"></div>').join('')}
+    <!-- Phase 2: EXPLOSION MEGA INTENSE avec FLASH AVEUGLANT -->
+    <div class="reveal-opening">
+      <!-- Triple flash -->
+      <div class="white-flash"></div>
+      <div class="flash-secondary"></div>
+      
+      <!-- Ondes de choc -->
+      <div class="shockwave shockwave-1"></div>
+      <div class="shockwave shockwave-2"></div>
+      <div class="shockwave shockwave-3"></div>
+      
+      <!-- Explosion centrale -->
+      <div class="opening-burst"></div>
+      
+      <!-- 24 rayons de lumière -->
+      <div class="light-rays">
+        ${Array.from({ length: 24 }, () => '<div class="light-ray"></div>').join('')}
+      </div>
+      
+      <!-- 30 particules d'explosion -->
+      ${Array.from({ length: 30 }, () => '<div class="explosion-particle"></div>').join('')}
+      
+      <!-- Étoiles -->
+      <div class="stars">
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
+        <div class="star">⭐</div>
       </div>
     </div>
 
-    <!-- Phase 3: Révélation -->
+    <!-- Phase 3: Révélation avec neige -->
     <div class="reveal-content">
-      <div class="confetti-container">
-        ${Array.from({ length: 20 }, () => '<div class="confetti"></div>').join('')}
+      <div class="snow-container">
+        ${Array.from({ length: 15 }, () => '<div class="snow">❄</div>').join('')}
       </div>
       
       <div class="jersey-container">
@@ -821,7 +1159,7 @@ export class AppComponent {
       </div>
 
       <div class="congratulations">
-        <h2 class="congrats-title">🎉 Félicitations ! 🎉</h2>
+        <h2 class="congrats-title">� Joyeux Noël ! �</h2>
         <h3 class="player-name-reveal">
           ${player.prenom} ${player.nom}
         </h3>
