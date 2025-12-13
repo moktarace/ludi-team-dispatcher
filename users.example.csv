@@ -1,0 +1,4 @@
+"id","first_name","last_name","number","motto","email","password","cycle","authorizations"
+"200","John","Doe","0",,"john.doe@example.com",NULL,"1","0"
+"201","Jane","Smith","0",,"jane.smith@example.com","$2y$10$...",,"1","0"
+"202","Bob","Johnson","0",,"bob.johnson@example.com",NULL,"1","0"

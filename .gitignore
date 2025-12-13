@@ -43,3 +43,13 @@ Thumbs.db
 
 # Private configuration
 src/assets/captains.json
+
+# Data files with personal information
+exemple.tsv
+exemple.xlsx
+users.csv
+*.tsv
+*.csv
+# Exception: allow example files
+!*.example.tsv
+!*.example.csv
