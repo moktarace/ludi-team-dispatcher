@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CsvParserService } from './services/csv-parser.service';
 import { TeamDispatcherService } from './services/team-dispatcher.service';
 import { Team, Player, PlayerSwapSuggestion } from './models/player.model';
+import captainsData from '../assets/captains.json';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ export class AppComponent {
   animationPhase: 'smoke' | 'flash' | 'reveal' = 'smoke';
   waitingRoomWindow: Window | null = null;
   animationSpeed: 'slow' | 'normal' | 'fast' = 'normal';
+  private captains: { [key: string]: string } = captainsData;
 
   constructor(
     private csvParser: CsvParserService,
@@ -574,8 +576,13 @@ export class AppComponent {
     `;
   }
 
+  private getTeamCaptain(teamName: string): string {
+    return this.captains[teamName] || '';
+  }
+
   private generateRevealHTML(player: Player, team: Team): string {
     const textColor = team.name === 'Blanc' ? '#000' : '#fff';
+    const captain = this.getTeamCaptain(team.name);
     
     // Calcul des durées d'animation en fonction de la vitesse
     const speedMultiplier = this.animationSpeed === 'slow' ? 1.5 : this.animationSpeed === 'fast' ? 0.5 : 1;
@@ -1440,6 +1447,17 @@ export class AppComponent {
         <p class="team-announcement">
           Tu fais partie de l'équipe <strong style="color: ${team.color};">${team.name}</strong> !
         </p>
+        ${captain ? `
+        <p class="captain-info" style="
+          font-size: 1.1em;
+          margin: 15px 0;
+          color: #ffd700;
+          font-weight: 600;
+          animation: announceFadeIn 0.5s ease-out 3.6s backwards;
+        ">
+          👑 Capitaine : ${captain}
+        </p>
+        ` : ''}
         <button class="close-reveal-btn" onclick="window.close()">Fermer</button>
       </div>
     </div>
